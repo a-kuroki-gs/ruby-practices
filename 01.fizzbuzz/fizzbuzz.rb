@@ -7,7 +7,7 @@ def fizzbuzz(first, last)
     elsif n % 5 == 0
       puts "Buzz"
     else
-      puts "#{n}"
+      puts n
     end
   end
 end
