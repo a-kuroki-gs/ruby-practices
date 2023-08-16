@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 score = ARGV[0]
 scores = score.split(',')
@@ -12,57 +13,53 @@ scores.each do |s|
   end
 end
 
-frames = []
-shots.each_slice(2) do |s|
-  frames << s
-end
-
-frames1 = frames.take(9)
-frames2 = frames.drop(9)
+frames = shots.each_slice(2).to_a
+frames_1_9 = frames.take(9)
+frames_10 = frames.drop(9)
 
 point = 0
-p_plus = 0
-frames1.each do |frame|
+prev_frames = :normal
+frames_1_9.each do |frame|
   point += frame.sum
-  case p_plus
-  when 4
+  case prev_frames
+  when :double
     point += frame[0]
     point += frame.sum
-  when 2
+  when :strike
     point += frame.sum
-  when 1
+  when :spare
     point += frame[0]
   end
-  p_plus =
+  prev_frames =
     if frame[0] == 10
-      [2, 4].include?(p_plus) ? 4 : 2
+      [:double, :strike].include?(prev_frames) ? :double : :strike
     elsif frame.sum == 10
-      1
+      :spare
     else
-      0
+      :normal
     end
 end
 
-case p_plus
-when 4
-  if frames2[0] == [10, 0]
+case prev_frames
+when :double
+  if frames_10[0] == [10, 0]
     point += 20
-    point += frames2[1].first
+    point += frames_10[1].first
   else
-    point += frames2[0].sum + frames2[0].first
+    point += frames_10[0].sum + frames_10[0].first
   end
-when 2
-  if frames2[0] == [10, 0]
+when :strike
+  if frames_10[0] == [10, 0]
     point += 10
-    point += frames2[1].first
+    point += frames_10[1].first
   else
-    point += frames2[0].sum
+    point += frames_10[0].sum
   end
-when 1
-  point += frames2[0].first
+when :spare
+  point += frames_10[0].first
 end
 
-frames2.each do |frame|
+frames_10.each do |frame|
   point += frame.sum
 end
 
