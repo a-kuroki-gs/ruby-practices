@@ -15,7 +15,7 @@ y = option[:y].nil? ? Date.today.year.to_i : option[:y].to_i
 m = option[:m].nil? ? Date.today.month.to_i : option[:m].to_i
 
 def print_day(date)
-  print date == Date.today ? "\e[30m\e[47m#{date.day.to_s.rjust(2)}\e[0m " : date.day.to_s.rjust(2) + ' '
+  print date == Date.today ? "\e[7m#{date.day.to_s.rjust(2)}\e[0m " : date.day.to_s.rjust(2) + ' '
   puts if date.saturday?
 end
 
@@ -40,7 +40,7 @@ if y >= 1
   if m >= 1 && m <= 12
     print_calender(y, m)
   else
-    puts "cal: #{m} is neither a month number (1..12) nor a name"
+    puts "cal: #{m} is not a month number (1..12)"
   end
 else
   puts '不正な入力です'
