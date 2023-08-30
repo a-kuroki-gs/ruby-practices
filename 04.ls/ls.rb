@@ -5,10 +5,8 @@ require 'optparse'
 
 OptionParser.new
 
-# 標準入力を受け取って変数に代入
 input_all = ARGV
 
-# 引数がなければカレントディレクトリを指定
 input_all << '.' if input_all == []
 
 target_dir_all = []
@@ -16,7 +14,6 @@ input_dir_all = []
 dir_on_input = false
 file_on_input = false
 
-# 入力された引数がディレクトリなら探索対象のディレクトリを探索、ファイルなら表示
 input_all.each do |input|
   if File.ftype(input) == 'directory'
     target_dir_all << Dir.entries(input)
@@ -28,15 +25,13 @@ input_all.each do |input|
   end
 end
 
-# ファイルを表示して改行、ディレクトリがあれば空行を挿入
-if file_on_input == true
+if file_on_input
   puts
-  puts if dir_on_input == true
+  puts if dir_on_input
 end
 
 colon_dir_all = []
 normal_dir_all = []
-# .から始まるものとそれ以外で分ける
 target_dir_all.each do |target_dir|
   colon_dir = []
   normal_dir = []
@@ -47,26 +42,27 @@ target_dir_all.each do |target_dir|
       normal_dir << target
     end
   end
+  # TODO: colon_dir_allは-aオプションの表示で利用する
   colon_dir_all << colon_dir
   normal_dir_all << normal_dir
 end
 
-# .から始まらないものを昇順に並べる
 normal_dir_all = normal_dir_all.map(&:sort)
 
-# 表示する列数に応じて行数を計算するメソッド
-def calc_num_of_lines(element_count, col)
-  # ファイル数をcolで割って余りが0ならelement_count行
-  if (element_count % col).zero?
-    element_count / col
-  # ファイル数をcolで割って余りが0でなければelement_count + 1 行
-  else
-    element_count / col + 1
+def build_element_array(element, max_name_size_array)
+  max_row_length = element.size.ceildiv(3)
+
+  modified_elements = []
+  element.each_slice(max_row_length) do |e|
+    max_name_size_array << e.map(&:length).max
+    modified_element = e + [nil] * (max_row_length - e.size)
+    modified_elements << modified_element
   end
+
+  modified_elements.transpose
 end
 
-# 最大ファイル文字数+2の幅で、配列の要素を表示するメソッド
-def print_element(dir, max_width_array)
+def print_element_array(dir, max_width_array)
   dir.each do |elements|
     elements.each_with_index do |element, idx|
       element = element.ljust(max_width_array[idx] + 2) unless element.nil?
@@ -76,34 +72,16 @@ def print_element(dir, max_width_array)
   end
 end
 
-# 要素を表示するメソッド
 def print_elements(element)
-  # ３列表示の時の行数を計算
-  max_row_length = calc_num_of_lines(element.size, 3)
-
-  modified_elements = []
   max_name_size_array = []
 
-  # 行として分割
-  element.each_slice(max_row_length) do |e|
-    # 行(のちの列)ごとに最大ファイル文字数をカウント
-    max_name_size_array << e.map(&:length).max
-    # 要素が足りないところにはnilを代入
-    modified_element = e + [nil] * (max_row_length - e.size)
-    modified_elements << modified_element
-  end
-  element = modified_elements
+  element = build_element_array(element, max_name_size_array)
 
-  # 要素を転置
-  element = element.transpose
-
-  # 最大ファイル文字数+2の幅で、nil以外の配列の要素を表示
-  print_element(element, max_name_size_array)
+  print_element_array(element, max_name_size_array)
 end
 
-# lsコマンドと同じように表示
 normal_dir_all.each_with_index do |normal, idx|
-  if normal_dir_all.size > 1 || file_on_input == true
+  if normal_dir_all.size > 1 || file_on_input
     puts if idx != 0
     puts "#{input_dir_all[idx]}:"
   end
