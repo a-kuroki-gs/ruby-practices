@@ -3,52 +3,6 @@
 
 require 'optparse'
 
-OptionParser.new
-
-input_all = ARGV
-
-input_all << '.' if input_all == []
-
-target_dir_all = []
-input_dir_all = []
-dir_on_input = false
-file_on_input = false
-
-input_all.each do |input|
-  if File.ftype(input) == 'directory'
-    target_dir_all << Dir.entries(input)
-    input_dir_all << input
-    dir_on_input = true
-  else
-    print input.ljust(input.size + 2)
-    file_on_input = true
-  end
-end
-
-if file_on_input
-  puts
-  puts if dir_on_input
-end
-
-colon_dir_all = []
-normal_dir_all = []
-target_dir_all.each do |target_dir|
-  colon_dir = []
-  normal_dir = []
-  target_dir.each do |target|
-    if target[0] == '.'
-      colon_dir << target
-    else
-      normal_dir << target
-    end
-  end
-  # TODO: colon_dir_allは-aオプションの表示で利用する
-  colon_dir_all << colon_dir
-  normal_dir_all << normal_dir
-end
-
-normal_dir_all = normal_dir_all.map(&:sort)
-
 def build_element_array(element, max_name_size_array)
   max_row_length = element.size.ceildiv(3)
 
@@ -80,10 +34,47 @@ def print_elements(element)
   print_element_array(element, max_name_size_array)
 end
 
-normal_dir_all.each_with_index do |normal, idx|
-  if normal_dir_all.size > 1 || file_on_input
-    puts if idx != 0
-    puts "#{input_dir_all[idx]}:"
+opt = OptionParser.new
+
+params = {}
+opt.on('-a') { |v| params[:a] = v }
+opt.parse!(ARGV)
+input_all =
+  if ARGV == []
+    ['.']
+  else
+    ARGV
   end
-  print_elements(normal)
+
+if params[:a]
+  target_dir_all = []
+  input_dir_all = []
+  dir_on_input = false
+  file_on_input = false
+
+  input_all.each do |input|
+    if File.ftype(input) == 'directory'
+      target_dir_all << Dir.entries(input)
+      input_dir_all << input
+      dir_on_input = true
+    else
+      print input.ljust(input.size + 2)
+      file_on_input = true
+    end
+  end
+
+  if file_on_input
+    puts
+    puts if dir_on_input
+  end
+
+  dir_all = target_dir_all.map(&:sort)
+
+  dir_all.each_with_index do |dir, idx|
+    if dir_all.size > 1 || file_on_input
+      puts if idx != 0
+      puts "#{input_dir_all[idx]}:"
+    end
+    print_elements(dir)
+  end
 end
