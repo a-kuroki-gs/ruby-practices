@@ -27,6 +27,8 @@ def print_element_array(dir, max_width_array)
 end
 
 def print_elements(element)
+  return if element == []
+
   max_name_size_array = []
 
   element = build_element_array(element, max_name_size_array)
@@ -67,19 +69,14 @@ if file_on_input
   puts if dir_on_input
 end
 
-if params[:a]
-  dir_all = target_dir_all.map(&:sort)
-else
-  normal_dir_all = []
-  target_dir_all.each do |target_dir|
-    normal_dir = []
-    target_dir.each do |target|
-      normal_dir << target unless target[0] == '.'
+if params[:a].nil?
+  target_dir_all =
+    target_dir_all.map do |target_dir|
+      target_dir.reject { |target| target[0] == '.' }
     end
-    normal_dir_all << normal_dir
-  end
-  dir_all = normal_dir_all.map(&:sort)
 end
+
+dir_all = target_dir_all.map(&:sort)
 
 dir_all.each_with_index do |dir, idx|
   if dir_all.size > 1 || file_on_input
