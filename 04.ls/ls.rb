@@ -72,7 +72,7 @@ end
 if params[:a].nil?
   target_dir_all =
     target_dir_all.map do |target_dir|
-      target_dir.reject { |target| target[0] == '.' }
+      target_dir.reject { |target| target.start_with?('.') }
     end
 end
 
