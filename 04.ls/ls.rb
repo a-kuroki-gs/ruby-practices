@@ -40,12 +40,14 @@ opt = OptionParser.new
 
 params = {}
 opt.on('-a') { |v| params[:a] = v }
+opt.on('-r') { |v| params[:r] = v }
 opt.parse!(ARGV)
+
 input_all =
   if ARGV == []
     ['.']
   else
-    ARGV
+    params[:r] ? ARGV.sort.reverse : ARGV.sort
   end
 
 target_dir_all = []
@@ -76,7 +78,12 @@ if params[:a].nil?
     end
 end
 
-dir_all = target_dir_all.map(&:sort)
+dir_all =
+  if params[:r]
+    target_dir_all.map { |target_dir| target_dir.sort.reverse }
+  else
+    target_dir_all.map(&:sort)
+  end
 
 dir_all.each_with_index do |dir, idx|
   if dir_all.size > 1 || file_on_input
