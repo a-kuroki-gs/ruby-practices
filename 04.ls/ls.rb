@@ -5,6 +5,27 @@ require 'date'
 require 'etc'
 require 'optparse'
 
+FILE_TYPES = {
+  '1' => 'p',
+  '2' => 'c',
+  '4' => 'd',
+  '6' => 'b',
+  '10' => '-',
+  '12' => 'l',
+  '14' => 's'
+}.freeze
+
+PERMISSIONS = {
+  '0' => '---',
+  '1' => '--x',
+  '2' => '-w-',
+  '3' => '-wx',
+  '4' => 'r--',
+  '5' => 'r-x',
+  '6' => 'rw-',
+  '7' => 'rwx'
+}.freeze
+
 def print_block_count(input)
   total_blocks = 0
   Dir.foreach(input) do |i|
@@ -16,16 +37,7 @@ def print_block_count(input)
 end
 
 def get_filetype(filetype)
-  filetypes = {
-    '1' => 'p',
-    '2' => 'c',
-    '4' => 'd',
-    '6' => 'b',
-    '10' => '-',
-    '12' => 'l',
-    '14' => 's'
-  }
-  filetypes[filetype]
+  FILE_TYPES[filetype]
 end
 
 def get_name_from_id(id)
@@ -56,24 +68,7 @@ end
 
 def print_permission(filemode)
   filemode.each_char do |f|
-    case f
-    when '0'
-      print '---'
-    when '1'
-      print '--x'
-    when '2'
-      print '-w-'
-    when '3'
-      print '-wx'
-    when '4'
-      print 'r--'
-    when '5'
-      print 'r-x'
-    when '6'
-      print 'rw-'
-    when '7'
-      print 'rwx'
-    end
+    print PERMISSIONS[f]
   end
 end
 
