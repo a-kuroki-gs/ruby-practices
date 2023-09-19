@@ -116,12 +116,12 @@ def print_filename_array(array, max_width_array)
   end
 end
 
-def print_filenames(element)
-  return if element == []
+def print_filenames(array)
+  return if array == []
 
   max_length_array = []
-  element = build_element_array(element, max_length_array)
-  print_element_array(element, max_length_array)
+  filename_array = build_filename_array(array, max_length_array)
+  print_filename_array(filename_array, max_length_array)
 end
 
 def check_a_option(filename)
@@ -176,9 +176,7 @@ if file_on_input
     end
   else
     target_file_all = a_option(target_file_all) if params[:a].nil?
-    max_length_array = []
-    filename_array = build_filename_array(target_file_all, max_length_array)
-    print_filename_array(filename_array, max_length_array)
+    print_filenames(target_file_all)
   end
 end
 
@@ -209,9 +207,7 @@ if dir_on_input
       target_dir = a_option(target_dir) if params[:a].nil?
       target_dir = r_option(target_dir) if params[:r]
 
-      max_length_array = []
-      filename_array = build_filename_array(target_dir, max_length_array)
-      print_filename_array(filename_array, max_length_array)
+      print_filenames(target_dir)
     end
   end
 end
