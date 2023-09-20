@@ -26,10 +26,10 @@ PERMISSIONS = {
   '7' => 'rwx'
 }.freeze
 
-def print_block_count(input, a_param)
+def print_block_count(input, display_all)
   total_blocks = 0
   Dir.foreach(input) do |i|
-    next if a_param.nil? && check_a_option(i)
+    next if display_all.nil? && i.start_with?('.')
 
     total_blocks += File.lstat("#{input}/#{i}").blocks
   end
@@ -124,16 +124,8 @@ def print_filenames(array)
   print_filename_array(filename_array, max_length_array)
 end
 
-def check_a_option(filename)
-  filename.start_with?('.')
-end
-
 def a_option(element)
-  element.reject { |e| check_a_option(e) }
-end
-
-def r_option(element)
-  element.reverse
+  element.reject { |e| e.start_with?('.') }
 end
 
 opt = OptionParser.new
@@ -148,7 +140,7 @@ input_all =
   if ARGV == []
     ['.']
   else
-    params[:r] ? r_option(ARGV.sort) : ARGV.sort
+    params[:r] ? ARGV.sort.reverse : ARGV.sort
   end
 
 target_dir_all = []
@@ -169,7 +161,7 @@ if file_on_input
   if params[:l]
     max_length = { hardlink_count: 0, username: 0, groupname: 0, filesize: 0, updatemonth: 1 }
     target_file_all.each do |target_file|
-      next if params[:a].nil? && check_a_option(target_file)
+      next if params[:a].nil? && target_file.start_with?('.')
 
       content_info, max_length = get_contents(target_file, max_length)
       print_contents(content_info, max_length)
@@ -192,20 +184,20 @@ if dir_on_input
       content_info_array = []
       max_length = { hardlink_count: 0, username: 0, groupname: 0, filesize: 0, updatemonth: 1 }
       Dir.entries(target_dir).sort.each do |target|
-        next if params[:a].nil? && check_a_option(target)
+        next if params[:a].nil? && target.start_with?('.')
 
         target_path = "#{target_dir}/#{target}"
         content_info, max_length = get_contents(target_path, max_length)
         content_info_array << content_info
       end
-      content_info_array = r_option(content_info_array) if params[:r]
+      content_info_array = content_info_array.reverse if params[:r]
       content_info_array.each do |c|
         print_contents(c, max_length)
       end
     else
       target_dir = Dir.entries(target_dir).sort
       target_dir = a_option(target_dir) if params[:a].nil?
-      target_dir = r_option(target_dir) if params[:r]
+      target_dir = target_dir.reverse if params[:r]
 
       print_filenames(target_dir)
     end
