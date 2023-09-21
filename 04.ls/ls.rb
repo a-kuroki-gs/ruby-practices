@@ -26,10 +26,10 @@ PERMISSIONS = {
   '7' => 'rwx'
 }.freeze
 
-def print_block_count(input)
+def print_block_count(input, display_all)
   total_blocks = 0
   Dir.foreach(input) do |i|
-    next if i.start_with?('.')
+    next if !display_all && i.start_with?('.')
 
     total_blocks += File.lstat("#{input}/#{i}").blocks
   end
@@ -95,9 +95,44 @@ def print_contents(content, max_length)
   puts content[:filename]
 end
 
+def build_filename_array(element, max_length_array)
+  max_row_length = element.size.ceildiv(3)
+  modified_elements = []
+  element.each_slice(max_row_length) do |e|
+    max_length_array << e.map(&:length).max
+    modified_element = e + [nil] * (max_row_length - e.size)
+    modified_elements << modified_element
+  end
+  modified_elements.transpose
+end
+
+def print_filename_array(array, max_width_array)
+  array.each do |elements|
+    elements.each_with_index do |element, idx|
+      element = element.ljust(max_width_array[idx] + 2) unless element.nil?
+      print element
+    end
+    puts
+  end
+end
+
+def print_filenames(array)
+  return if array == []
+
+  max_length_array = []
+  filename_array = build_filename_array(array, max_length_array)
+  print_filename_array(filename_array, max_length_array)
+end
+
+def reject_hidden_files(filename)
+  filename.reject { |f| f.start_with?('.') }
+end
+
 opt = OptionParser.new
 
 params = {}
+opt.on('-a') { |v| params[:a] = v }
+opt.on('-r') { |v| params[:r] = v }
 opt.on('-l') { |v| params[:l] = v }
 opt.parse!(ARGV)
 
@@ -105,14 +140,13 @@ input_all =
   if ARGV == []
     ['.']
   else
-    ARGV.sort
+    params[:r] ? ARGV.sort.reverse : ARGV.sort
   end
 
 target_dir_all = []
 target_file_all = []
 dir_on_input = false
 file_on_input = false
-
 input_all.each do |input|
   if File.ftype(input) == 'directory'
     target_dir_all << input
@@ -123,35 +157,46 @@ input_all.each do |input|
   end
 end
 
-if params[:l]
-  if file_on_input
+if file_on_input
+  if params[:l]
     max_length = { hardlink_count: 0, username: 0, groupname: 0, filesize: 0, updatemonth: 1 }
     target_file_all.each do |target_file|
       content_info, max_length = get_contents(target_file, max_length)
       print_contents(content_info, max_length)
     end
+  else
+    print_filenames(target_file_all)
   end
+end
 
-  if dir_on_input
-    puts if file_on_input
+if dir_on_input
+  puts if file_on_input
 
-    target_dir_all.each_with_index do |target_dir, idx|
+  target_dir_all.each_with_index do |target_dir, idx|
+    puts if idx != 0
+    puts "#{target_dir}:" if input_all.size > 1
+
+    if params[:l]
+      print_block_count(target_dir, params[:a])
       content_info_array = []
       max_length = { hardlink_count: 0, username: 0, groupname: 0, filesize: 0, updatemonth: 1 }
-      puts if idx != 0
-      puts "#{target_dir}:" if input_all.size > 1
-      print_block_count(target_dir)
-
       Dir.entries(target_dir).sort.each do |target|
-        next if target.start_with?('.')
+        next if !params[:a] && target.start_with?('.')
 
         target_path = "#{target_dir}/#{target}"
         content_info, max_length = get_contents(target_path, max_length)
         content_info_array << content_info
       end
+      content_info_array = content_info_array.reverse if params[:r]
       content_info_array.each do |c|
         print_contents(c, max_length)
       end
+    else
+      target_dir = Dir.entries(target_dir).sort
+      target_dir = reject_hidden_files(target_dir) if !params[:a]
+      target_dir = target_dir.reverse if params[:r]
+
+      print_filenames(target_dir)
     end
   end
 end
