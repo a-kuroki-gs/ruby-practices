@@ -3,7 +3,6 @@
 
 require 'optparse'
 
-# 行数を計算するメソッド
 def count_lines(file, max_length)
   line_count = 0
 
@@ -16,7 +15,6 @@ def count_lines(file, max_length)
   [line_count, max_length]
 end
 
-# 単語数を計算するメソッド
 def count_words(file, max_length)
   word_count = 0
 
@@ -30,7 +28,6 @@ def count_words(file, max_length)
   [word_count, max_length]
 end
 
-# バイト数を計算するメソッド
 def count_bytes(file, max_length)
   byte_count = file.bytesize
 
@@ -54,13 +51,10 @@ max_length = { lines: 0, words: 0, bytes: 0, path: 0 }
 if ARGV.empty?
   file_info = { lines: nil, words: nil, bytes: nil, path: nil }
 
-  # param[:l]→行数
   file = $stdin.read
 
   file_info[:lines], max_length[:lines] = count_lines(file, max_length[:lines])
-  # param[:w]→単語数
   file_info[:words], max_length[:words] = count_words(file, max_length[:words])
-  # param[:c]→バイト数
   file_info[:bytes], max_length[:bytes] = count_bytes(file, max_length[:bytes])
 
   max_length =
@@ -75,24 +69,18 @@ if ARGV.empty?
   file_info_array << file_info
 
 else
-  # ARGVのときの処理を入れる
   ARGV.each do |file_path|
     file_info = { lines: nil, words: nil, bytes: nil, path: nil }
     file = File.read(file_path.to_s)
 
-    # param[:l]→行数
     file_info[:lines], max_length[:lines] = count_lines(file, max_length[:lines])
-    # param[:w]→単語数
     file_info[:words], max_length[:words] = count_words(file, max_length[:words])
-    # param[:c]→バイト数
     file_info[:bytes], max_length[:bytes] = count_bytes(file, max_length[:bytes])
-    # ファイル名を入れる(パス)
     file_info[:path] = file_path
 
     file_info_array << file_info
   end
 
-  # paramsによって考える
   if ARGV.count == 1
     max_length =
       if params.values.count(true) == 1
@@ -101,7 +89,6 @@ else
         max_length.values.max
       end
   else
-    # 合計を計算する
     file_info_sum = { lines: 0, words: 0, bytes: 0, path: '合計' }
     max_length_of_sum = 0
     file_info_array.each do |info|
@@ -112,7 +99,6 @@ else
       max_length_of_sum = [max_length_of_sum, [file_info_sum[:lines], file_info_sum[:words], file_info_sum[:bytes]].max.to_s.length].max
     end
     file_info_array << file_info_sum
-    # max_lengthの計算が必要
     max_length = [max_length.values.max, max_length_of_sum].max
   end
 end
