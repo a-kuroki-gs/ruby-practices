@@ -3,45 +3,23 @@
 
 require 'optparse'
 
-def get_line_info(file, max_length)
-  line_count = 0
-
-  file.each_line do
-    line_count += 1
-  end
-
-  max_length = [max_length, line_count.to_s.length].max
-
-  [line_count, max_length]
-end
-
-def get_word_info(file, max_length)
-  word_count = 0
-
-  file.each_line do |l|
-    word_array = l.split(' ')
-    word_count += word_array.count
-  end
-
-  max_length = [max_length, word_count.to_s.length].max
-
-  [word_count, max_length]
-end
-
-def get_byte_info(file, max_length)
-  byte_count = file.bytesize
-
-  max_length = [max_length, byte_count.to_s.length].max
-
-  [byte_count, max_length]
+def calculate_max_length(count_number, max_length)
+  [max_length, count_number.to_s.length].max
 end
 
 def get_file_info(file, max_lengths_of_data_size)
-  file_info = { lines: nil, words: nil, bytes: nil, path: nil }
+  file_info = { lines: 0, words: 0, bytes: 0, path: nil }
 
-  file_info[:lines], max_lengths_of_data_size[:lines] = get_line_info(file, max_lengths_of_data_size[:lines])
-  file_info[:words], max_lengths_of_data_size[:words] = get_word_info(file, max_lengths_of_data_size[:words])
-  file_info[:bytes], max_lengths_of_data_size[:bytes] = get_byte_info(file, max_lengths_of_data_size[:bytes])
+  file.each_line do |l|
+    file_info[:lines] += 1
+    word_array = l.split(' ')
+    file_info[:words] += word_array.count
+  end
+  file_info[:bytes] = file.bytesize
+
+  max_lengths_of_data_size[:lines] = calculate_max_length(file_info[:lines], max_lengths_of_data_size[:lines])
+  max_lengths_of_data_size[:words] = calculate_max_length(file_info[:words], max_lengths_of_data_size[:words])
+  max_lengths_of_data_size[:bytes] = calculate_max_length(file_info[:bytes], max_lengths_of_data_size[:bytes])
 
   [file_info, max_lengths_of_data_size]
 end
