@@ -36,18 +36,6 @@ def get_byte_info(file, max_length)
   [byte_count, max_length]
 end
 
-opt = OptionParser.new
-
-params = {}
-opt.on('-l') { |v| params[:l] = v }
-opt.on('-w') { |v| params[:w] = v }
-opt.on('-c') { |v| params[:c] = v }
-opt.parse!(ARGV)
-
-file_infos = []
-
-max_length = { lines: 0, words: 0, bytes: 0, path: 0 }
-
 def get_file_info(file, max_length)
   file_info = { lines: nil, words: nil, bytes: nil, path: nil }
 
@@ -90,6 +78,17 @@ def get_sum_info(file_infos)
 
   [file_infos, string_length_of_sum]
 end
+
+opt = OptionParser.new
+
+params = {}
+opt.on('-l') { |v| params[:l] = v }
+opt.on('-w') { |v| params[:w] = v }
+opt.on('-c') { |v| params[:c] = v }
+opt.parse!(ARGV)
+
+file_infos = []
+max_length = { lines: 0, words: 0, bytes: 0, path: 0 }
 
 if ARGV.empty?
   file_info, max_length = get_file_info($stdin.read, max_length)
