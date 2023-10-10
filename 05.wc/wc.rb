@@ -36,47 +36,47 @@ def get_byte_info(file, max_length)
   [byte_count, max_length]
 end
 
-def get_file_info(file, max_length)
+def get_file_info(file, max_lengths_of_data_size)
   file_info = { lines: nil, words: nil, bytes: nil, path: nil }
 
-  file_info[:lines], max_length[:lines] = get_line_info(file, max_length[:lines])
-  file_info[:words], max_length[:words] = get_word_info(file, max_length[:words])
-  file_info[:bytes], max_length[:bytes] = get_byte_info(file, max_length[:bytes])
+  file_info[:lines], max_lengths_of_data_size[:lines] = get_line_info(file, max_lengths_of_data_size[:lines])
+  file_info[:words], max_lengths_of_data_size[:words] = get_word_info(file, max_lengths_of_data_size[:words])
+  file_info[:bytes], max_lengths_of_data_size[:bytes] = get_byte_info(file, max_lengths_of_data_size[:bytes])
 
-  [file_info, max_length]
+  [file_info, max_lengths_of_data_size]
 end
 
-def get_string_length_of_stdin(params, max_length)
+def get_max_length_of_stdin(params, max_lengths_of_data_size)
   if params.values.count(true) == 1
     0
-  elsif max_length.values.max < 8
+  elsif max_lengths_of_data_size.values.max < 8
     7
   else
-    max_length.values.max - 2
+    max_lengths_of_data_size.values.max - 2
   end
 end
 
-def get_string_length_of_file(params, max_length)
+def get_max_length_of_file(params, max_lengths_of_data_size)
   if params.values.count(true) == 1
     0
   else
-    max_length.values.max
+    max_lengths_of_data_size.values.max
   end
 end
 
 def get_sum_info(file_infos)
   file_info_sum = { lines: 0, words: 0, bytes: 0, path: '合計' }
-  string_length_of_sum = 0
+  max_length_of_sum = 0
   file_infos.each do |info|
     file_info_sum[:lines] += info[:lines]
     file_info_sum[:words] += info[:words]
     file_info_sum[:bytes] += info[:bytes]
 
-    string_length_of_sum = [string_length_of_sum, [file_info_sum[:lines], file_info_sum[:words], file_info_sum[:bytes]].max.to_s.length].max
+    max_length_of_sum = [max_length_of_sum, [file_info_sum[:lines], file_info_sum[:words], file_info_sum[:bytes]].max.to_s.length].max
   end
   file_infos << file_info_sum
 
-  [file_infos, string_length_of_sum]
+  [file_infos, max_length_of_sum]
 end
 
 opt = OptionParser.new
@@ -88,26 +88,26 @@ opt.on('-c') { |v| params[:c] = v }
 opt.parse!(ARGV)
 
 file_infos = []
-max_length = { lines: 0, words: 0, bytes: 0, path: 0 }
+string_lengths_of_data_size = { lines: 0, words: 0, bytes: 0, path: 0 }
 
 if ARGV.empty?
-  file_info, max_length = get_file_info($stdin.read, max_length)
+  file_info, string_lengths_of_data_size = get_file_info($stdin.read, string_lengths_of_data_size)
   file_infos << file_info
 
-  string_length = get_string_length_of_stdin(params, max_length)
+  string_length = get_max_length_of_stdin(params, string_lengths_of_data_size)
 
 else
   ARGV.each do |file_path|
-    file_info, max_length = get_file_info(File.read(file_path), max_length)
+    file_info, string_lengths_of_data_size = get_file_info(File.read(file_path), string_lengths_of_data_size)
     file_info[:path] = file_path
     file_infos << file_info
   end
 
   if ARGV.count == 1
-    string_length = get_string_length_of_file(params, max_length)
+    string_length = get_max_length_of_file(params, string_lengths_of_data_size)
   else
     file_infos, string_length_of_sum = get_sum_info(file_infos)
-    string_length = [max_length.values.max, string_length_of_sum].max
+    string_length = [string_lengths_of_data_size.values.max, string_length_of_sum].max
   end
 end
 
