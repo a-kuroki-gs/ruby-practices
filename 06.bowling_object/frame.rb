@@ -18,6 +18,6 @@ class Frame
   end
 
   def spare?
-    score == 10 unless strike?
+    strike? ? false : (score == 10)
   end
 end
