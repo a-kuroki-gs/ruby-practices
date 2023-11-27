@@ -2,19 +2,19 @@
 
 class Game
   def initialize(game_mark)
-    @game_marks = game_mark.split(',')
+    game_marks = game_mark.split(',')
 
     @frames = []
     9.times do
-      rolls = @game_marks.shift(2)
+      rolls = game_marks.shift(2)
       if rolls.first == 'X'
         @frames << Frame.new('X', '0')
-        @game_marks.unshift(rolls.last)
+        game_marks.unshift(rolls.last)
       else
         @frames << Frame.new(rolls.first, rolls.last)
       end
     end
-    @frames << Frame.new(@game_marks[0], @game_marks[1], @game_marks[2])
+    @frames << Frame.new(game_marks[0], game_marks[1], game_marks[2])
   end
 
   def bonus_of_strike(next_frame, after_next_frame)
