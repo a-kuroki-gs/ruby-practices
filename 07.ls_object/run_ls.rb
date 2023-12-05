@@ -16,18 +16,12 @@ directory = ARGV[0] || '.'
 
 d = Directory.new(directory)
 
-# aオプション
 d = d.reject_dot_files unless params[:a]
-
-# rオプション
 d = d.reverse_files if params[:r]
 
-# lオプション
 if params[:l]
   puts "合計 #{d.calculate_block_counts}"
   puts d.print_l_option
-
-# lオプションじゃないとき
 else
   puts d.print_not_l_option
 end
