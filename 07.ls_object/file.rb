@@ -30,14 +30,6 @@ class File
     '7' => 'rwx'
   }.freeze
 
-  def type
-    FILE_TYPES[@file_mode[..-5]]
-  end
-
-  def permission
-    @file_mode[-3..].each_char.map { |number| PERMISSIONS[number] }.join
-  end
-
   def mode
     type + permission
   end
@@ -68,5 +60,15 @@ class File
 
   def blocks
     @file.blocks
+  end
+
+  private
+
+  def type
+    FILE_TYPES[@file_mode[..-5]]
+  end
+
+  def permission
+    @file_mode[-3..].each_char.map { |number| PERMISSIONS[number] }.join
   end
 end
