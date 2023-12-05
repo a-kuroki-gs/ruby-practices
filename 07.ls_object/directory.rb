@@ -68,7 +68,8 @@ class Directory
         " #{file.user.ljust(max_user)}",
         " #{file.group.ljust(max_group)}",
         " #{file.bytesize.to_s.rjust(max_size)}",
-        " #{file.mtime}",
+        " #{file.mtime.strftime('%-m月').rjust(5)}",
+        " #{file.mtime.strftime('%e %H:%M')}",
         " #{file.name}"
       ].join.rstrip
     end

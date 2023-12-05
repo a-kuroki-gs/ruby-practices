@@ -59,7 +59,7 @@ class File
   end
 
   def mtime
-    @file.mtime.strftime('%-m').rjust(2) + @file.mtime.strftime('月 %e %H:%M')
+    @file.mtime
   end
 
   def name
