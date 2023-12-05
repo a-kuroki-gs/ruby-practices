@@ -61,19 +61,16 @@ class Directory
     max_size = @files.map { |file| file.bytesize.to_s.size }.max
 
     # １行ずつ表示
-    output =
-      @files.map do |file|
-        [
-          file.mode,
-          " #{file.nlink.to_s.rjust(max_nlink)}",
-          " #{file.user.ljust(max_user)}",
-          " #{file.group.ljust(max_group)}",
-          " #{file.bytesize.to_s.rjust(max_size)}",
-          " #{file.mtime}",
-          " #{file.name}"
-        ].join
-      end
-
-    output.join("\n")
+    @files.map do |file|
+      [
+        file.mode,
+        " #{file.nlink.to_s.rjust(max_nlink)}",
+        " #{file.user.ljust(max_user)}",
+        " #{file.group.ljust(max_group)}",
+        " #{file.bytesize.to_s.rjust(max_size)}",
+        " #{file.mtime}",
+        " #{file.name}"
+      ].join.rstrip
+    end
   end
 end
