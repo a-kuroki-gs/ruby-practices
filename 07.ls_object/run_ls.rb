@@ -26,4 +26,8 @@ d = d.reverse_files if params[:r]
 if params[:l]
   puts "合計 #{d.calculate_block_counts}"
   puts d.print_l_option
+
+# lオプションじゃないとき
+else
+  puts d.print_not_l_option
 end

@@ -5,6 +5,8 @@ require_relative './file'
 class Directory
   attr_reader :files
 
+  COLUMN_NUMBER = 3
+
   def initialize(directory)
     @files =
       Dir.entries(directory).sort.each_with_object([]) do |file, files|
@@ -27,9 +29,29 @@ class Directory
     @files.sum(&:blocks) / 2
   end
 
-  # def print_not_l_option
+  def print_not_l_option
+    # 表示するファイルの数から行数を求める
+    row_number = (@files.size.to_f / COLUMN_NUMBER).ceil
 
-  # end
+    # ３個おきに最大を求める
+    max_lengths =
+      @files.each_slice(row_number).map do |files|
+        files.map { |file| file.name.size }.max
+      end
+
+    # 配列を作って転置する
+    before_format_files = @files.map(&:name).each_slice(row_number).to_a
+    before_format_files.last.size == row_number || before_format_files.last.fill(nil, before_format_files.last.size...row_number)
+    formatted_files = before_format_files.transpose
+
+    # １行ずつ表示する
+    formatted_files.each_with_object([]) do |files, output|
+      output <<
+        files.map.with_index do |file, index|
+          file.ljust(max_lengths[index] + 2) unless file.nil?
+        end.join.rstrip
+    end
+  end
 
   def print_l_option
     # 最大を取得
