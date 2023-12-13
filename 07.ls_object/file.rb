@@ -5,8 +5,7 @@ require 'etc'
 class File
   def initialize(path)
     @path = path
-    @file = File.lstat(@path)
-    @file_mode = @file.mode.to_s(8)
+    @file_stat = File.lstat(@path)
   end
 
   FILE_TYPES = {
@@ -35,23 +34,23 @@ class File
   end
 
   def nlink
-    @file.nlink
+    @file_stat.nlink
   end
 
   def user
-    Etc.getpwuid(@file.uid).name
+    Etc.getpwuid(@file_stat.uid).name
   end
 
   def group
-    Etc.getpwuid(@file.gid).name
+    Etc.getpwuid(@file_stat.gid).name
   end
 
   def bytesize
-    @file.size
+    @file_stat.size
   end
 
   def mtime
-    @file.mtime
+    @file_stat.mtime
   end
 
   def name
@@ -59,16 +58,16 @@ class File
   end
 
   def blocks
-    @file.blocks
+    @file_stat.blocks
   end
 
   private
 
   def type
-    FILE_TYPES[@file_mode[..-5]]
+    FILE_TYPES[@file_stat.mode.to_s(8)[..-5]]
   end
 
   def permission
-    @file_mode[-3..].each_char.map { |number| PERMISSIONS[number] }.join
+    @file_stat.mode.to_s(8)[-3..].each_char.map { |number| PERMISSIONS[number] }.join
   end
 end

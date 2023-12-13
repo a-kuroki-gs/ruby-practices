@@ -9,9 +9,9 @@ class Directory
 
   def initialize(directory)
     @files =
-      Dir.entries(directory).sort.each_with_object([]) do |file, files|
+      Dir.entries(directory).sort.map do |file|
         path = "#{directory}/#{file}"
-        files << File.new(path)
+        File.new(path)
       end
   end
 
@@ -45,7 +45,7 @@ class Directory
       output <<
         files.map.with_index do |file, index|
           file.ljust(max_lengths[index] + 2) unless file.nil?
-        end.join.rstrip
+        end.join
     end
   end
 
@@ -65,7 +65,7 @@ class Directory
         " #{file.mtime.strftime('%-m月').rjust(5)}",
         " #{file.mtime.strftime('%e %H:%M')}",
         " #{file.name}"
-      ].join.rstrip
+      ].join
     end
   end
 end

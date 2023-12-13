@@ -12,16 +12,16 @@ opt.on('-l') { |v| params[:l] = v }
 opt.on('-r') { |v| params[:r] = v }
 opt.on('-a') { |v| params[:a] = v }
 opt.parse!(ARGV)
-directory = ARGV[0] || '.'
+input = ARGV[0] || '.'
 
-d = Directory.new(directory)
+directory = Directory.new(input)
 
-d = d.reject_dot_files unless params[:a]
-d = d.reverse_files if params[:r]
+directory = directory.reject_dot_files unless params[:a]
+directory = directory.reverse_files if params[:r]
 
 if params[:l]
-  puts "合計 #{d.calculate_block_counts}"
-  puts d.print_l_option
+  puts "合計 #{directory.calculate_block_counts}"
+  puts directory.print_l_option
 else
-  puts d.print_not_l_option
+  puts directory.print_not_l_option
 end
