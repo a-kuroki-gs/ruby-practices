@@ -2,8 +2,7 @@
 
 require 'optparse'
 
-require_relative './file'
-require_relative './directory'
+require_relative './display'
 
 opt = OptionParser.new
 
@@ -14,14 +13,14 @@ opt.on('-a') { |v| params[:a] = v }
 opt.parse!(ARGV)
 input = ARGV[0] || '.'
 
-directory = Directory.new(input)
+display_files = Display.new(input)
 
-directory = directory.reject_dot_files unless params[:a]
-directory = directory.reverse_files if params[:r]
+display_files = display_files.reject_dot_files unless params[:a]
+display_files = display_files.reverse_files if params[:r]
 
 if params[:l]
-  puts "合計 #{directory.calculate_block_counts}"
-  puts directory.print_detailed_list_format
+  puts "合計 #{display_files.calculate_block_counts}"
+  puts display_files.print_detailed_list_format
 else
-  puts directory.print_simple_list_format
+  puts display_files.print_simple_list_format
 end
