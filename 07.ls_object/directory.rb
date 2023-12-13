@@ -29,7 +29,7 @@ class Directory
     @files.sum(&:blocks) / 2
   end
 
-  def print_not_l_option
+  def print_simple_list_format
     row_number = (@files.size.to_f / COLUMN_NUMBER).ceil
 
     max_lengths =
@@ -49,7 +49,7 @@ class Directory
     end
   end
 
-  def print_l_option
+  def print_detailed_list_format
     max_nlink = @files.map { |file| file.nlink.to_s.size }.max
     max_user = @files.map { |file| file.user.size }.max
     max_group = @files.map { |file| file.group.size }.max

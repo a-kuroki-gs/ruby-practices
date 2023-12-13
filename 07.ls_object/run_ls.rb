@@ -21,7 +21,7 @@ directory = directory.reverse_files if params[:r]
 
 if params[:l]
   puts "合計 #{directory.calculate_block_counts}"
-  puts directory.print_l_option
+  puts directory.print_detailed_list_format
 else
-  puts directory.print_not_l_option
+  puts directory.print_simple_list_format
 end
