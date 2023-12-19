@@ -1,27 +1,11 @@
 # frozen_string_literal: true
 
-require_relative './directory'
-
 class Display
-  def initialize(input)
-    @display = Directory.new(input).files
+  def initialize(files)
+    @display = files
   end
 
   COLUMN_NUMBER = 3
-
-  def reject_dot_files
-    @display = @display.reject { |file| file.name.start_with?('.') }
-    self
-  end
-
-  def reverse_files
-    @display = @display.reverse
-    self
-  end
-
-  def calculate_block_counts
-    @display.sum(&:blocks) / 2
-  end
 
   def display_simple_list
     row_number = (@display.size.to_f / COLUMN_NUMBER).ceil
@@ -43,13 +27,13 @@ class Display
     end
   end
 
-  def display_detailed_list
+  def display_detailed_list(block_counts)
     max_nlink = @display.map { |file| file.nlink.to_s.size }.max
     max_user = @display.map { |file| file.user.size }.max
     max_group = @display.map { |file| file.group.size }.max
     max_size = @display.map { |file| file.bytesize.to_s.size }.max
 
-    puts "合計 #{calculate_block_counts}"
+    puts "合計 #{block_counts}"
     @display.map do |file|
       puts [
         file.mode,
