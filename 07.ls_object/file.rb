@@ -2,7 +2,7 @@
 
 require 'etc'
 
-class File
+class FileStat
   def initialize(path)
     @path = path
     @file_stat = File.lstat(@path)

@@ -9,7 +9,7 @@ class Directory
     @files =
       Dir.entries(directory).sort.map do |file|
         path = "#{directory}/#{file}"
-        File.new(path)
+        FileStat.new(path)
       end
   end
 end
