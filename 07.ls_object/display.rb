@@ -19,7 +19,7 @@ class Display
     before_format_display.last.size == row_number || before_format_display.last.fill(nil, before_format_display.last.size...row_number)
     formatted_display = before_format_display.transpose
 
-    formatted_display.each_with_object([]) do |display, output|
+    formatted_display.each do |display|
       display.map.with_index do |file, index|
         print file.ljust(max_lengths[index] + 2) unless file.nil?
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FileManager
   attr_reader :files
 
