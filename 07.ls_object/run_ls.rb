@@ -19,8 +19,7 @@ display_files = display_files.reject_dot_files unless params[:a]
 display_files = display_files.reverse_files if params[:r]
 
 if params[:l]
-  puts "合計 #{display_files.calculate_block_counts}"
-  puts display_files.print_detailed_list_format
+  display_files.display_detailed_list
 else
-  puts display_files.print_simple_list_format
+  display_files.display_simple_list
 end
