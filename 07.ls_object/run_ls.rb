@@ -30,7 +30,7 @@ display = Display.new(file_manager.files)
 
 if params[:l]
   block_counts = file_manager.calculate_block_counts
-  display.display_detailed_list(block_counts)
+  display.print_detailed_list(block_counts)
 else
-  display.display_simple_list
+  display.print_simple_list
 end

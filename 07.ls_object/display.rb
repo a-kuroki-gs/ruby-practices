@@ -7,7 +7,7 @@ class Display
     @display = files
   end
 
-  def display_simple_list
+  def print_simple_list
     row_number = (@display.size.to_f / COLUMN_NUMBER).ceil
 
     max_lengths =
@@ -27,7 +27,7 @@ class Display
     end
   end
 
-  def display_detailed_list(block_counts)
+  def print_detailed_list(block_counts)
     max_nlink = @display.map { |file| file.nlink.to_s.size }.max
     max_user = @display.map { |file| file.user.size }.max
     max_group = @display.map { |file| file.group.size }.max
