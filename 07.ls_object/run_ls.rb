@@ -15,13 +15,13 @@ opt.on('-a') { |v| params[:a] = v }
 opt.parse!(ARGV)
 directory_name = ARGV[0] || '.'
 
-files =
+file_stats =
   Dir.entries(directory_name).sort.map do |file|
     path = "#{directory_name}/#{file}"
     FileStat.new(path)
   end
 
-file_manager = FileManager.new(files)
+file_manager = FileManager.new(file_stats)
 
 file_manager = file_manager.reject_dot_files unless params[:a]
 file_manager = file_manager.reverse_files if params[:r]

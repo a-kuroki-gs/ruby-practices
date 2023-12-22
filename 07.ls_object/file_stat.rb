@@ -26,7 +26,7 @@ class FileStat
 
   def initialize(path)
     @path = path
-    @file_stat = File.lstat(@path)
+    @lstat = File.lstat(@path)
   end
 
   def mode
@@ -34,23 +34,23 @@ class FileStat
   end
 
   def nlink
-    @file_stat.nlink
+    @lstat.nlink
   end
 
   def user
-    Etc.getpwuid(@file_stat.uid).name
+    Etc.getpwuid(@lstat.uid).name
   end
 
   def group
-    Etc.getpwuid(@file_stat.gid).name
+    Etc.getpwuid(@lstat.gid).name
   end
 
   def bytesize
-    @file_stat.size
+    @lstat.size
   end
 
   def mtime
-    @file_stat.mtime
+    @lstat.mtime
   end
 
   def name
@@ -58,16 +58,16 @@ class FileStat
   end
 
   def blocks
-    @file_stat.blocks
+    @lstat.blocks
   end
 
   private
 
   def type
-    FILE_TYPES[@file_stat.mode.to_s(8)[..-5]]
+    FILE_TYPES[@lstat.mode.to_s(8)[..-5]]
   end
 
   def permission
-    @file_stat.mode.to_s(8)[-3..].each_char.map { |number| PERMISSIONS[number] }.join
+    @lstat.mode.to_s(8)[-3..].each_char.map { |number| PERMISSIONS[number] }.join
   end
 end
