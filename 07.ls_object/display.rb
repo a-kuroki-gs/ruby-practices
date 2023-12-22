@@ -36,14 +36,14 @@ class Display
     @file_stats.each do |file|
       puts [
         file.mode,
-        " #{file.nlink.to_s.rjust(max_nlink)}",
-        " #{file.user.ljust(max_user)}",
-        " #{file.group.ljust(max_group)}",
-        " #{file.bytesize.to_s.rjust(max_size)}",
-        " #{file.mtime.strftime('%-m月').rjust(5)}",
-        " #{file.mtime.strftime('%e %H:%M')}",
-        " #{file.name}"
-      ].join
+        file.nlink.to_s.rjust(max_nlink),
+        file.user.ljust(max_user),
+        file.group.ljust(max_group),
+        file.bytesize.to_s.rjust(max_size),
+        file.mtime.strftime('%-m月').rjust(5),
+        file.mtime.strftime('%e %H:%M'),
+        file.name
+      ].join(' ')
     end
   end
 end
