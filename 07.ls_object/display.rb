@@ -3,8 +3,8 @@
 class Display
   COLUMN_NUMBER = 3
 
-  def initialize(files)
-    @file_stats = files
+  def initialize(file_stats)
+    @file_stats = file_stats
   end
 
   def print_simple_list
