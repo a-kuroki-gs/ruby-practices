@@ -20,7 +20,7 @@ class Display
     formatted_display = before_format_display.transpose
 
     formatted_display.each do |display|
-      display.map.with_index do |file, index|
+      display.each_with_index do |file, index|
         print file.ljust(max_lengths[index] + 2) unless file.nil?
       end
       puts
@@ -34,7 +34,7 @@ class Display
     max_size = @file_stats.map { |file| file.bytesize.to_s.size }.max
 
     puts "合計 #{block_counts}"
-    @file_stats.map do |file|
+    @file_stats.each do |file|
       puts [
         file.mode,
         " #{file.nlink.to_s.rjust(max_nlink)}",
