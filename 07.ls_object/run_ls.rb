@@ -15,11 +15,10 @@ opt.on('-a') { |v| params[:a] = v }
 opt.parse!(ARGV)
 directory_name = ARGV[0] || '.'
 
-file_stats =
-  Dir.entries(directory_name).sort.map do |file|
-    path = "#{directory_name}/#{file}"
-    FileStat.new(path)
-  end
+file_stats = Dir.entries(directory_name).sort.map do |file|
+  path = "#{directory_name}/#{file}"
+  FileStat.new(path)
+end
 
 file_manager = FileManager.new(file_stats)
 

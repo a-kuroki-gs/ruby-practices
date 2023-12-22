@@ -10,10 +10,9 @@ class Display
   def print_simple_list
     row_number = (@file_stats.size.to_f / COLUMN_NUMBER).ceil
 
-    max_lengths =
-      @file_stats.each_slice(row_number).map do |file_stat|
-        file_stat.map { |file| file.name.size }.max
-      end
+    max_lengths = @file_stats.each_slice(row_number).map do |file_stat|
+      file_stat.map { |file| file.name.size }.max
+    end
 
     before_format_display = @file_stats.map(&:name).each_slice(row_number).to_a
     before_format_display.last.size == row_number || before_format_display.last.fill(nil, before_format_display.last.size...row_number)
