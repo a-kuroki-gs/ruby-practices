@@ -4,7 +4,6 @@ require 'optparse'
 
 require_relative './display'
 require_relative './file_stat'
-require_relative './file_manager'
 
 opt = OptionParser.new
 
@@ -20,16 +19,13 @@ file_stats = Dir.entries(directory_name).sort.map do |file|
   FileStat.new(path)
 end
 
-file_manager = FileManager.new(file_stats)
+file_stats = file_stats.reject { |file_stat| file_stat.name.start_with?('.') } unless params[:a]
+file_stats = file_stats.reverse if params[:r]
 
-file_manager = file_manager.reject_dot_files unless params[:a]
-file_manager = file_manager.reverse_files if params[:r]
-
-display = Display.new(file_manager.files)
+display = Display.new(file_stats)
 
 if params[:l]
-  block_counts = file_manager.calculate_block_counts
-  display.print_detailed_list(block_counts)
+  display.print_detailed_list
 else
   display.print_simple_list
 end

@@ -26,13 +26,13 @@ class Display
     end
   end
 
-  def print_detailed_list(block_counts)
+  def print_detailed_list
     max_nlink = @file_stats.map { |file| file.nlink.to_s.size }.max
     max_user = @file_stats.map { |file| file.user.size }.max
     max_group = @file_stats.map { |file| file.group.size }.max
     max_size = @file_stats.map { |file| file.bytesize.to_s.size }.max
 
-    puts "合計 #{block_counts}"
+    puts "合計 #{@file_stats.sum(&:blocks) / 2}"
     @file_stats.each do |file|
       puts [
         file.mode,
