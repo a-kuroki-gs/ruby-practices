@@ -3,11 +3,6 @@
 require 'etc'
 
 class FileStat
-  def initialize(path)
-    @path = path
-    @file_stat = File.lstat(@path)
-  end
-
   FILE_TYPES = {
     '1' => 'p',
     '2' => 'c',
@@ -28,6 +23,11 @@ class FileStat
     '6' => 'rw-',
     '7' => 'rwx'
   }.freeze
+
+  def initialize(path)
+    @path = path
+    @file_stat = File.lstat(@path)
+  end
 
   def mode
     type + permission

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Display
+  COLUMN_NUMBER = 3
+
   def initialize(files)
     @display = files
   end
-
-  COLUMN_NUMBER = 3
 
   def display_simple_list
     row_number = (@display.size.to_f / COLUMN_NUMBER).ceil
