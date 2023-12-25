@@ -16,7 +16,9 @@ class Display
     end
 
     before_format_display = @file_stats.map(&:name).each_slice(row_number).to_a
-    before_format_display.last.size == row_number || before_format_display.last.fill(nil, before_format_display.last.size...row_number)
+    unless before_format_display.last.size == row_number
+      before_format_display.last.fill(nil, before_format_display.last.size...row_number)
+    end
     formatted_display = before_format_display.transpose
 
     formatted_display.each do |display|
