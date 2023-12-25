@@ -3,8 +3,9 @@
 class Display
   COLUMN_NUMBER = 3
 
-  def initialize(file_stats)
+  def initialize(file_stats, params)
     @file_stats = file_stats
+    @params = params
   end
 
   def print_simple_list
@@ -43,6 +44,17 @@ class Display
         format('%<month>3s%<day_and_time>9s', month: file.mtime.strftime('%-m月'), day_and_time: file.mtime.strftime('%e %H:%M')),
         file.name
       ].join(' ')
+    end
+  end
+
+  def print_list
+    @file_stats = @file_stats.reject { |file_stat| file_stat.name.start_with?('.') } unless @params[:a]
+    @file_stats = @file_stats.reverse if @params[:r]
+
+    if @params[:l]
+      print_detailed_list
+    else
+      print_simple_list
     end
   end
 end

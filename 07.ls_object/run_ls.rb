@@ -19,13 +19,5 @@ file_stats = Dir.entries(directory_name).sort.map do |file|
   FileStat.new(path)
 end
 
-file_stats = file_stats.reject { |file_stat| file_stat.name.start_with?('.') } unless params[:a]
-file_stats = file_stats.reverse if params[:r]
-
-display = Display.new(file_stats)
-
-if params[:l]
-  display.print_detailed_list
-else
-  display.print_simple_list
-end
+display = Display.new(file_stats, params)
+display.print_list
