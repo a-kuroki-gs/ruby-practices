@@ -40,8 +40,7 @@ class Display
         file.user.ljust(max_user),
         file.group.ljust(max_group),
         file.bytesize.to_s.rjust(max_size),
-        file.mtime.strftime('%-m月').rjust(5),
-        file.mtime.strftime('%e %H:%M'),
+        format('%<month>3s%<day_and_time>9s', month: file.mtime.strftime('%-m月'), day_and_time: file.mtime.strftime('%e %H:%M')),
         file.name
       ].join(' ')
     end
