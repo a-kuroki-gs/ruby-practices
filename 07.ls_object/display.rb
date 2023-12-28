@@ -28,14 +28,14 @@ class Display
       file_stat.map { |file| file.name.size }.max
     end
 
-    before_format_display = @file_stats.map(&:name).each_slice(row_number).to_a
-    last_col = before_format_display.last
+    nested_file_names = @file_stats.map(&:name).each_slice(row_number).to_a
+    last_col = nested_file_names.last
     last_col.fill(nil, last_col.size...row_number) unless last_col.size == row_number
-    formatted_display = before_format_display.transpose
+    formatted_file_names = nested_file_names.transpose
 
-    formatted_display.each do |display|
-      display.each_with_index do |file, index|
-        print file.ljust(max_lengths[index] + 2) unless file.nil?
+    formatted_file_names.each do |file_names|
+      file_names.each_with_index do |file_name, index|
+        print file_name.ljust(max_lengths[index] + 2) unless file_name.nil?
       end
       puts
     end
