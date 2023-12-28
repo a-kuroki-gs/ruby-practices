@@ -8,6 +8,19 @@ class Display
     @params = params
   end
 
+  def print_list
+    @file_stats = @file_stats.reject { |file_stat| file_stat.name.start_with?('.') } unless @params[:a]
+    @file_stats = @file_stats.reverse if @params[:r]
+
+    if @params[:l]
+      print_detailed_list
+    else
+      print_simple_list
+    end
+  end
+
+  private
+
   def print_simple_list
     row_number = (@file_stats.size.to_f / COLUMN_NUMBER).ceil
 
@@ -44,17 +57,6 @@ class Display
         format('%<month>3s%<day_and_time>9s', month: file_stat.mtime.strftime('%-m月'), day_and_time: file_stat.mtime.strftime('%e %H:%M')),
         file_stat.name
       ].join(' ')
-    end
-  end
-
-  def print_list
-    @file_stats = @file_stats.reject { |file_stat| file_stat.name.start_with?('.') } unless @params[:a]
-    @file_stats = @file_stats.reverse if @params[:r]
-
-    if @params[:l]
-      print_detailed_list
-    else
-      print_simple_list
     end
   end
 end
