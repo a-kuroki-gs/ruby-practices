@@ -4,15 +4,18 @@ class Display
   COLUMN_NUMBER = 3
 
   def initialize(file_stats, params)
-    @file_stats = file_stats
-    @params = params
+    @params_l = params[:l]
+    @file_stats =
+      if params[:a]
+        file_stats
+      else
+        file_stats.reject { |file_stat| file_stat.name.start_with?('.') }
+      end
+    @file_stats = @file_stats.reverse if params[:r]
   end
 
   def print_list
-    @file_stats = @file_stats.reject { |file_stat| file_stat.name.start_with?('.') } unless @params[:a]
-    @file_stats = @file_stats.reverse if @params[:r]
-
-    if @params[:l]
+    if @params_l
       print_detailed_list
     else
       print_simple_list
