@@ -42,7 +42,7 @@ class FileStat
   end
 
   def group
-    Etc.getpwuid(@lstat.gid).name
+    Etc.getgrgid(@lstat.gid).name
   end
 
   def bytesize
